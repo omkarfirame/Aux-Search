@@ -1,0 +1,8 @@
+LICENSE
+README.md
+setup.py
+src/AuxSearch/__init__.py
+src/AuxSearch.egg-info/PKG-INFO
+src/AuxSearch.egg-info/SOURCES.txt
+src/AuxSearch.egg-info/dependency_links.txt
+src/AuxSearch.egg-info/top_level.txt
