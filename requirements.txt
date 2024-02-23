@@ -4,5 +4,6 @@ BeautifulSoup4
 gpt4all
 langchainhub
 pypdf
-chainlit
+streamlit
+PyPDF2
 -e .
