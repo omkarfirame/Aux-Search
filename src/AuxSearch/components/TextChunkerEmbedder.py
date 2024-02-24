@@ -1,6 +1,6 @@
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.vectorstores import FAISS
+from langchain_community.vectorstores.faiss import FAISS
 from langchain.embeddings import OllamaEmbeddings 
 
 
@@ -13,7 +13,7 @@ class TextProcessor:
         parameter: text from pdf to text
         return: text in chunks
         """
-        text_splitter = RecursiveCharacterTextSplitter()
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
         chunks = text_splitter.split_text(text)
         return chunks
 

@@ -21,7 +21,7 @@ class ChainLoader:
 
             Answer:
         """
-        model = CTransformers(model=self.model_path)
+        model = CTransformers(model = 'C:/Users/omkar/Downloads/LLama2-Model/llama-2-7b-chat.ggmlv3.q8_0.bin',model_type='llama')
         prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
         chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
         return chain

@@ -1,76 +1,43 @@
 import streamlit as st
-from langchain.prompts import PromptTemplate
-from langchain.llms import CTransformers
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.document_loaders import PyPDFLoader, DirectoryLoader
-from langchain.document_loaders.pdf import PyPDFDirectoryLoader
-from langchain.document_loaders import UnstructuredHTMLLoader, BSHTMLLoader
-from langchain_community.vectorstores import FAISS
+from AuxSearch.components.PDFTextExtractor import PDFConverter
+from AuxSearch.components.TextChunkerEmbedder import TextProcessor
+from AuxSearch.components.Model import ChainLoader
 from langchain.embeddings import OllamaEmbeddings 
-from langchain_core.prompts import ChatPromptTemplate
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.chains import create_retrieval_chain
+from langchain_community.vectorstores.faiss import FAISS
+from AuxSearch.constants import *
 
-## Function To get response from LLAma 2 model
+pdfconverter = PDFConverter()
+textprocessor = TextProcessor()
+chains = ChainLoader()
 
 
-
-
-def getLLamaresponse(file,question):
-    loader = PyPDFDirectoryLoader(file)
-    documents = loader.load()
+def user_input(user_question):
     embeddings = OllamaEmbeddings()
-    print(f"Processed {len(documents)} pdf files")
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=50)
-    texts=text_splitter.split_documents(documents)
-    vector = FAISS.from_documents(texts, embeddings)
-
-
-    ### LLama2 model
-    llm=CTransformers(model='C:\\Users\\omkar\\Downloads\\LLama2-Model\llama-2-7b-chat.ggmlv3.q8_0.bin',
-                      model_type='llama',
-                      config={'max_new_tokens':256,
-                              'temperature':0.01})
     
-    prompt = ChatPromptTemplate.from_template("""Answer the following question based only on the provided context:
+    new_db = FAISS.load_local("faiss_index", embeddings)
+    docs = new_db.similarity_search(user_question)
 
-    <context>
-    {context}
-    </context>
+    chain = chains.get_chains()
 
-    Question: {question}""")
-
-    document_chain = create_stuff_documents_chain(llm, prompt)
-
-    retriever = vector.as_retriever()
-    retrieval_chain = create_retrieval_chain(retriever, document_chain)
-
-    response = retrieval_chain.invoke({"input": {question}})
-    print(response["answer"])
-
-    return response["answer"]
-
-
-
-
-
-
-st.set_page_config(page_title="Aux-Search",
-                    page_icon='🤖',
-                    layout='centered',
-                    initial_sidebar_state='collapsed')
-
-st.header("Aux-Search Information 🤖")
-
-input_text=st.text_input("Upload The pdf")
-
-## creating to more columns for additonal 2 fields
-
-files=st.file_uploader("Choose a file", type=["txt","pdf"])
-question = st.text_input("Enter the Question")
     
-submit=st.button("Generate")
+    response = chain(
+        {"input_documents":docs, "question": user_question}
+        , return_only_outputs=True)
 
-## Final response
-if submit:
-    st.write(getLLamaresponse(files,question))
+    print(response)
+    st.write("Reply: ", response["output_text"])
+
+st.set_page_config("Chat PDF")
+st.header("Chat with PDF using LLAMA2 ")
+
+pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=False)
+user_question = st.text_input("Ask a Question from the PDF Files")
+
+if user_question:
+    user_input(user_question)
+    if st.button("Submit & Process"):
+        with st.spinner("Processing..."):
+            raw_text = pdfconverter.pdf_to_text(pdf_docs)
+            text_chunks = textprocessor.get_chunks(raw_text)
+            textprocessor.get_vector_store(text_chunks)
+            st.success("Done")
