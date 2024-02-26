@@ -1,43 +1,44 @@
 import streamlit as st
 from AuxSearch.components.PDFTextExtractor import PDFConverter
 from AuxSearch.components.TextChunkerEmbedder import TextProcessor
-from AuxSearch.components.Model import ChainLoader
-from langchain.embeddings import OllamaEmbeddings 
 from langchain_community.vectorstores.faiss import FAISS
 from AuxSearch.constants import *
+from AuxSearch.components.Model import ResponseGenerator
 
 pdfconverter = PDFConverter()
 textprocessor = TextProcessor()
-chains = ChainLoader()
+responsegen = ResponseGenerator()
 
 
-def user_input(user_question):
-    embeddings = OllamaEmbeddings()
-    
-    new_db = FAISS.load_local("faiss_index", embeddings)
-    docs = new_db.similarity_search(user_question)
 
-    chain = chains.get_chains()
 
-    
-    response = chain(
-        {"input_documents":docs, "question": user_question}
-        , return_only_outputs=True)
+import streamlit as st
 
-    print(response)
-    st.write("Reply: ", response["output_text"])
+def main():
+    st.title("Question Answering System")
 
-st.set_page_config("Chat PDF")
-st.header("Chat with PDF using LLAMA2 ")
+    # File upload
+    uploaded_file = st.file_uploader("Upload a file", type=["pdf"])
+    question = st.text_input("Enter your question")
 
-pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=False)
-user_question = st.text_input("Ask a Question from the PDF Files")
-
-if user_question:
-    user_input(user_question)
-    if st.button("Submit & Process"):
-        with st.spinner("Processing..."):
-            raw_text = pdfconverter.pdf_to_text(pdf_docs)
+    if uploaded_file and question:
+        submit_button = st.button("Submit")
+        if submit_button:
+            raw_text = pdfconverter.pdf_to_text(uploaded_file)
             text_chunks = textprocessor.get_chunks(raw_text)
             textprocessor.get_vector_store(text_chunks)
-            st.success("Done")
+
+
+            # Question input
+            
+
+            if st.button("Get Answer"):
+                # Initialize UserInput instance
+                rag_chain = responsegen.get_response()
+                # Display the answer
+                st.subheader("Answer:")
+                st.write(rag_chain.invoke(question))
+        
+if __name__ == "__main__":
+    main()
+

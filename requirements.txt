@@ -1,9 +1,8 @@
-chromadb
+faiss-cpu
 langchain
-BeautifulSoup4
-gpt4all
 langchainhub
 pypdf
 streamlit
 PyPDF2
+langchain_google_genai
 -e .
