@@ -5,4 +5,5 @@ pypdf
 streamlit
 PyPDF2
 langchain_google_genai
+flask
 -e .
