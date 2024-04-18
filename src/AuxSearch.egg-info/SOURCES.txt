@@ -6,3 +6,7 @@ src/AuxSearch.egg-info/PKG-INFO
 src/AuxSearch.egg-info/SOURCES.txt
 src/AuxSearch.egg-info/dependency_links.txt
 src/AuxSearch.egg-info/top_level.txt
+src/AuxSearch/components/Model.py
+src/AuxSearch/components/PDFTextExtractor.py
+src/AuxSearch/components/TextChunkerEmbedder.py
+src/AuxSearch/components/__init__.py

@@ -9,3 +9,54 @@ Project-URL: Bug Tracker, https://github.com/omkarfirame/Aux-Search/issues
 License-File: LICENSE
 
 # Aux-Search
+
+This project utilizes Google Gemini using langchain to generate answers to questions based on a given PDF file. It's built as a web application using Flask.
+
+## Features
+
+- **PDF File Input**: Upload your PDF file containing the text you want to generate answers from.
+- **Question Input**: Input the question you want to ask about the content of the PDF.
+- **Vector Database**: It uses Faiss vector database to store the indexes.
+- **Answer Generation**: Google Gemini will process the PDF and generate an answer to the question provided.
+- **User-Friendly Interface**: The web interface makes it easy to interact with the application.
+
+## Requirements
+
+- Python 3.9
+- Flask
+- langchain
+- faiss-cpu
+
+## Installation
+
+1. Clone the repository:
+
+git clone https://github.com/omkarfirame/Aux-Search.git
+
+
+2. Install dependencies:
+
+pip install -r requirements.txt
+
+
+3. Set up Google Gemini API credentials. Follow the instructions provided by Google to obtain API credentials.
+
+4. Run the Flask application:
+
+python app.py
+
+
+5. Access the application in your web browser.
+
+## Usage
+
+1. Upload a PDF file containing the text you want to generate answers from.
+2. Input a question related to the content of the PDF.
+3. Click on the "Submit" button.
+4. The application will display the generated answer.
+
+## Contributing
+
+Contributions are welcome! If you find any bugs or have suggestions for improvements, feel free to open an issue or submit a pull request.
+
+

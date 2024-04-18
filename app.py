@@ -1,7 +1,7 @@
 import streamlit as st
 from AuxSearch.components.PDFTextExtractor import PDFConverter
 from AuxSearch.components.TextChunkerEmbedder import TextProcessor
-from AuxSearch.constants import *
+# from AuxSearch.constants import *
 from AuxSearch.components.Model import ResponseGenerator
 from flask import Flask, render_template, request
 import openai
